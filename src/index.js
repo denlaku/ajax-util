@@ -4,14 +4,20 @@ const contentType = 'Content-Type';
 const applicationJson = 'application/json';
 const multipartFormData = 'multipart/form-data';
 const info = {
-  ajaxCount: 0,
-  successCount: 0,
-  errorCount: 0
+  get ajaxCount() {
+    return this.getCount + this.postCount + this.deleteCount + this.putCount;
+  },
+  get successCount() {
+    return this.getSuccessCount + this.postSuccessCount + this.deleteSuccessCount + this.putSuccessCount;
+  },
+  get errorCount() {
+    return this.getErrorCount + this.postErrorCount + this.deleteErrorCount + this.putErrorCount;
+  }
 };
 
 const ajax = ({
   url,
-  method,
+  method = 'GET',
   params = {},
   success = noop,
   error = noop,
@@ -22,12 +28,14 @@ const ajax = ({
   timeout = 0,
   responseType = 'json'
 }) => {
+  const realMethod = method.toUpperCase();
+  const lowerMethod = method.toLowerCase();
   const client = new XMLHttpRequest();
   before();
-  info.ajaxCount++;
+  info[`${lowerMethod}Count`]++;
   let reqUrl = url;
   let reqParams = null;
-  if (method === 'get') {
+  if (realMethod === 'GET') {
     const temp=[];
     for (let key of Object.keys(params)) {
       let value = params[key];
@@ -45,14 +53,14 @@ const ajax = ({
       reqUrl += (reqUrl.indexOf('?') === -1 ? '?' : '&') + temp.join('&');
     }
   }
-  client.open(method, reqUrl, !sync);
+  client.open(realMethod, reqUrl, !sync);
 
   client.onreadystatechange = () => {
     if (client.readyState !== 4) {
       return;
     }
     if (client.status === 200) {
-      info.successCount++;
+      info[`${lowerMethod}SuccessCount`]++;
       after();
       let response = client.response;
       if (sync && responseType === 'json') {
@@ -64,7 +72,7 @@ const ajax = ({
       }
       success(response);
     } else {
-      info.errorCount++;
+      info[`${lowerMethod}ErrorCount`]++;
       after();
       error(client.statusText);
     }
@@ -90,7 +98,7 @@ const ajax = ({
   }
   client.setRequestHeader('x-requested-with', 'XMLHttpRequest');
 
-  if (method !== 'get') {
+  if (realMethod !== 'GET') {
     if (!hasContentType) {
       client.setRequestHeader(contentType, applicationJson);
       jsonMode = true;
@@ -111,8 +119,10 @@ const ajax = ({
 };
 
 const base = Object.create(null);
-base.ajax = ajax;
 for (const method of methods) {
+  info[`${method}Count`] = 0;
+  info[`${method}SuccessCount`] = 0;
+  info[`${method}ErrorCount`] = 0;
   base[method] = ({
     url,
     params,
