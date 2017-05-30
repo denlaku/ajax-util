@@ -22,7 +22,7 @@ success @Function
 error @Function
 before @Function
 after @Function
-headers = @Object
+headers @Object
 sync @Boolean
 timeout @Number
 responseType @String
