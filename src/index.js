@@ -3,17 +3,6 @@ const methods = ['get', 'post', 'delete', 'put'];
 const contentType = 'Content-Type';
 const applicationJson = 'application/json';
 const multipartFormData = 'multipart/form-data';
-const info = {
-  get ajaxCount() {
-    return this.getCount + this.postCount + this.deleteCount + this.putCount;
-  },
-  get successCount() {
-    return this.getSuccessCount + this.postSuccessCount + this.deleteSuccessCount + this.putSuccessCount;
-  },
-  get errorCount() {
-    return this.getErrorCount + this.postErrorCount + this.deleteErrorCount + this.putErrorCount;
-  }
-};
 
 const ajax = ({
   url,
@@ -29,10 +18,8 @@ const ajax = ({
   responseType = 'json'
 }) => {
   const realMethod = method.toUpperCase();
-  const lowerMethod = method.toLowerCase();
   const client = new XMLHttpRequest();
   before();
-  info[`${lowerMethod}Count`]++;
   let reqUrl = url;
   let reqParams = null;
   if (realMethod === 'GET') {
@@ -60,7 +47,6 @@ const ajax = ({
       return;
     }
     if (client.status === 200) {
-      info[`${lowerMethod}SuccessCount`]++;
       after();
       let response = client.response;
       if (sync && responseType === 'json') {
@@ -72,7 +58,6 @@ const ajax = ({
       }
       success(response);
     } else {
-      info[`${lowerMethod}ErrorCount`]++;
       after();
       error(client.statusText);
     }
@@ -177,7 +162,5 @@ base.upload = ({
     responseType
   });
 };
-
-base.getInfo = () => info;
 
 export default base;

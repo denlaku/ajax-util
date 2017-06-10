@@ -8,7 +8,6 @@ import ajaxUtil from 'ajax-util';
 ajaxUtil.get({
   url: 'package.json',
   success: (result) => {
-    console.log(ajaxUtil.getInfo());
     console.log(result);
   }
 });
@@ -16,7 +15,6 @@ ajaxUtil.get({
 # Parameters
 ```
 url @String
-method @String
 params @Object
 success @Function
 error @Function
