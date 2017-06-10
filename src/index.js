@@ -26,10 +26,11 @@ const ajax = ({
     const temp=[];
     for (let key of Object.keys(params)) {
       let value = params[key];
-      if (value === null || value === undefined) {
-        value = '';
-      } else if (typeof value === 'function') {
+      if (typeof value === 'function') {
         value = value();
+      }
+      if (value === null || value === undefined || value !== value || value === Infinity || value === -Infinity) {
+        value = '';
       }
       if (typeof value === 'object') {
         value = this.stringify(value);
@@ -105,9 +106,6 @@ const ajax = ({
 
 const base = Object.create(null);
 for (const method of methods) {
-  info[`${method}Count`] = 0;
-  info[`${method}SuccessCount`] = 0;
-  info[`${method}ErrorCount`] = 0;
   base[method] = ({
     url,
     params,
@@ -148,9 +146,8 @@ base.upload = ({
   sync,
   responseType
 }) => {
-  ajax({
+  base.post({
     url,
-    method: 'POST',
     params,
     before,
     after,
