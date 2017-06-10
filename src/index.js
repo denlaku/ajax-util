@@ -6,7 +6,7 @@ const multipartFormData = 'multipart/form-data';
 
 const ajax = ({
   url,
-  method = 'GET',
+  method,
   params = {},
   success = noop,
   error = noop,
