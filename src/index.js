@@ -33,7 +33,7 @@ const ajax = ({
         value = '';
       }
       if (typeof value === 'object') {
-        value = this.stringify(value);
+        value = JSON.stringify(value);
       }
       temp.push(`${key}=${encodeURIComponent(value)}`);
     }
