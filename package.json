@@ -1,6 +1,6 @@
 {
   "name": "ajax-util",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ajax util",
   "main": "lib/index.js",
   "scripts": {
