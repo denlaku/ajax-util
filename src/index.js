@@ -49,7 +49,7 @@ const ajax = ({
     if (client.status === 200) {
       after();
       let response = client.response;
-      if (sync && responseType === 'json') {
+      if (responseType === 'json') {
         try {
           response = JSON.parse(response);
         } catch(e) {
@@ -96,7 +96,7 @@ const ajax = ({
   }
 
   if (!sync) {
-    client.responseType = responseType;
+    // client.responseType = responseType;
     client.timeout = timeout;
   }
 
